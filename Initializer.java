@@ -1,359 +1,54 @@
-Skip to content
-
-
-This repository
- 
-Pull requests 
-Issues 
-Gist
-
-
-
-Sign out 
-
-
- Unwatch 
-1 
- Star 
-0 
- Fork 
-1 
-
-lovey12/Multiclass-SVM 
- Code 
- Issues 0 
- Pull requests 0 
- Projects 0 
- Wiki 
- Pulse 
- Graphs 
- Settings 
-Branch: master 
-Find file 
-Copy path
-Multiclass-SVM/MultiSVMCustomNode.java 
-caebc3a on Dec 20 2014 
- lovey12 Rename MyNode.java to MultiSVMCustomNode.java 
-1 contributor 
- 
-Raw
-Blame
-History
-   
-295 lines (220 sloc) 7.59 KB 
-
-package peersim.multisvm;
-
-
-
 import java.io.FileReader;
 
 import java.util.HashSet;
 
 import java.util.Set;
 
-
-
-import peersim.config.Configuration;
-
-import peersim.core.Cleanable;
-
-import peersim.core.CommonState;
-
-import peersim.core.Fallible;
-
-import peersim.core.Node;
-
-import peersim.core.Protocol;
-
 import weka.core.Instances;
 
-
-
-
-
-
-
-public class MultiSVMCustomNode implements Node{
-
-	
-
-
-
-    // The gradient at the node
-
-    public double[][] local_loss_sgd;
-
-
+public class Initialzer{
 
     public double[][] local_sgd;
 
-
-
-    // The protocols on current node
-
-    protected Protocol[] protocol = null;
-
-
-
     public static Set<Double> ClassSet = new HashSet<Double>();
-
-
-
-    public double frobenius_norm = 0.0;
-
-
-
-    public double norm = 0.0;
-
-
 
     // public String[] classArray= new String[3];
 
-    /**
-
-     * New config option added to get the resourcepath where the resource file
-
-     * should be generated. Resource files are named <ID> in resourcepath.
-
-     * 
-
-     * @config
-
-     */
-
-    private static final String PAR_PATH = "resourcepath";
-
-
-
-    private static final String PAR_SIZE = "network.size";
-
+    private static final String PAR_PATH = "resourcepath"
 
 
     /** used to generate unique IDs */
 
     private static long counter = -1;
 
-
-
-    // protected int lid;
-
-    // the weight vector at node
-
+    // the weight matrix
     public double[][] wtVec;
 
-
-
     public int num_class; // total no. of classes
-
-
-
     public int num_Att;
-
-
-
     public static int c;
-
-
-
     public int count = 0;
-
-
-
-    private int index; // current index of any node
-
-
-
-    /**
-
-     * The fail state of the node.
-
-     */
-
-    protected int failstate = Fallible.OK;
-
-
-
-    private long ID; // The ID of the node.
-
-
-
-    /**
-
-     * The prefix for the resources file. All the resources file will be in
-
-     * prefix directory. later it should be taken from configuration file.
-
-     */
-
-    /** Learning parameter */
-
-    protected int N;
-
-
+    private long ID; // The ID
 
     public int max_class = 10;
-
-
-
     protected double lambda = 0.01;
 
-
-
     /** Learning rate */
-
     protected double alpha = 0.02;
 
-
-
     private String resourcepath;
-
-
-
     public Instances traindataset; // The training dataset
-
-
-
     private long nextID()
 
     {
-
-
-
-        // TODO Auto-generated method stub
-
-        
-
-
-
         return counter++;
 
     }
-
-    
-
-	public int getFailState() {
-
-		// TODO Auto-generated method stub
-
-		return failstate;
-
-	}
-
-
-
-	public void setFailState(int failState) {
-
-		// TODO Auto-generated method stub
-
-		// after a node is dead, all operations on it are errors by definition
-
-        if (failstate == DEAD && failState != DEAD)
-
-            throw new IllegalStateException(
-
-                "Cannot change fail state: node is already DEAD");
-
-        switch (failState)
-
-        {
-
-        case OK:
-
-            failstate = OK;
-
-            break;
-
-        case DEAD:
-
-            // protocol = null;
-
-            index = -1;
-
-            failstate = DEAD;
-
-            for (int i = 0; i < protocol.length; ++i)
-
-                if (protocol[i] instanceof Cleanable)
-
-                    ((Cleanable) protocol[i]).onKill();
-
-            break;
-
-        case DOWN:
-
-            failstate = DOWN;
-
-            break;
-
-        default:
-
-            throw new IllegalArgumentException(
-
-                "failState=" + failState);
-
-        }
-
-	}
-
-
-
-	public boolean isUp() {
-
-		// TODO Auto-generated method stub
-
-		return failstate == OK;
-
-	}
-
-
-
-	public Protocol getProtocol(int i) {
-
-		// TODO Auto-generated method stub
-
-		return protocol[i];
-
-	}
-
-
-
-	public int protocolSize() {
-
-		// TODO Auto-generated method stub
-
-		return getProtocol().length;
-
-	}
-
-
-
-	public void setIndex(int index) {
-
-		// TODO Auto-generated method stub
-
-		this.index = index;
-
-	}
-
-
-
-	public int getIndex() {
-
-		// TODO Auto-generated method stub
-
-		return index;
-
-	}
-
-	 public void setID(long nextID)
+      	 public void setID(long nextID)
 
 	    {
 
-
-
 	        ID = nextID;
-
 
 
 	    }
@@ -365,126 +60,23 @@ public class MultiSVMCustomNode implements Node{
 		return ID;
 
 	}
-
-	 private Protocol[] getProtocol()
-
-	    {
-
-
-
-	        return protocol;
-
-	    }
-
-
-
-	    private void setProtocol(Protocol[] protocol)
-
-	    {
-
-
-
-	        this.protocol = protocol;
-
-
-
-	    }
-
 	    
-
-	   public MultiSVMCustomNode(String prefix)
+	   public Initialzer()
 
 	    {
-
-
-
-	        String[] names = Configuration.getNames(PAR_PROT); // protocol
-
-
-
 	        resourcepath = (String) Configuration.getString(prefix + "." + PAR_PATH);
 
 	        // N= Configuration.getInt(prefix + "."+PAR_SIZE);
 
 	        System.out.println("Data is saved in: " + resourcepath + "\n"); //
 
-	        CommonState.setNode(this); // sets current node
-
-	        protocol = new Protocol[names.length];
-
 	        setID(nextID());
-
-	        // ID = nextID(); //node ID starts from zero
-
-	        setProtocol(new Protocol[names.length]);
-
-	        for (int i = 0; i < names.length; i++) {
-
-	            CommonState.setPid(i); // sets protocol identifier
-
-	            Protocol p = (Protocol)
-
-	                Configuration.getInstance(names[i]);
-
-	            getProtocol()[i] = p;
-
-
-
-	        }
-
-	    }
-
-	
-
-	
-
-	   public Object clone()
-
-	    {
-
-
-
-	        MultiSVMCustomNode result = null;
-
-	        try {
-
-	            result = (MultiSVMCustomNode) super.clone();
-
-	        }
-
-	        catch (CloneNotSupportedException e) {
-
-	            e.printStackTrace();
-
-	        }
-
-	        result.setProtocol(new Protocol[getProtocol().length]);
-
-
-
-	        CommonState.setNode(result);
-
-	        result.setID(nextID());
-
-
-
-	        for (int i = 0; i < getProtocol().length; i++)
-
-	        {
-
-	            CommonState.setPid(i);
-
-	            result.getProtocol()[i] = (Protocol) getProtocol()[i].clone(); //
-
-	        }
-
-
 
 	        // read the data into node
 
 	        try {
 
-	            String traindataset = resourcepath + "/" + "waveform_dataset_"
+	            String traindataset = resourcepath + "/" + "weather_dataset_"
 
 	            		+ "" + result.getID() + ".arff";
 
@@ -500,7 +92,7 @@ public class MultiSVMCustomNode implements Node{
 
 	            num_Att = data.numAttributes() - 1;
 
-	            System.out.println("Number of Attributes at node " + result.getID() + " " + num_Att + "\n");
+	            System.out.println("Number of Attributes at nod+ result.getID() + " " + num_Att + "\n");
 
 	            // total number of instances
 
