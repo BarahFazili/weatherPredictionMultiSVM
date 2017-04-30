@@ -1,4 +1,4 @@
-import java.io.FileReader;
+iimport java.io.FileReader;
 
 import java.util.HashSet;
 
@@ -6,7 +6,7 @@ import java.util.Set;
 
 import weka.core.Instances;
 
-public class Initialzer{
+public class Initializer{
 
     public double[][] local_sgd;
 
@@ -14,16 +14,12 @@ public class Initialzer{
 
     // public String[] classArray= new String[3];
 
-    private static final String PAR_PATH = "resourcepath"
-
-
+    private static final String PAR_PATH = "resourcepath";
     /** used to generate unique IDs */
 
     private static long counter = -1;
-
     // the weight matrix
     public double[][] wtVec;
-
     public int num_class; // total no. of classes
     public int num_Att;
     public static int c;
@@ -47,16 +43,10 @@ public class Initialzer{
       	 public void setID(long nextID)
 
 	    {
-
 	        ID = nextID;
-
-
 	    }
 
 	public long getID() {
-
-		// TODO Auto-generated method stub
-
 		return ID;
 
 	}
@@ -78,7 +68,7 @@ public class Initialzer{
 
 	            String traindataset = resourcepath + "/" + "weather_dataset_"
 
-	            		+ "" + result.getID() + ".arff";
+	            		 + ".arff";
 
 	            // Instances data= traindataset.getDataSet();
 
@@ -87,18 +77,17 @@ public class Initialzer{
 	            Instances data = new Instances(reader);
 
 
-
 	            // printing the number of attributes
 
 	            num_Att = data.numAttributes() - 1;
 
-	            System.out.println("Number of Attributes at nod+ result.getID() + " " + num_Att + "\n");
+	            System.out.println("Number of Attributes" + " " + num_Att + "\n");
 
 	            // total number of instances
 
 	            int num_Instance = data.numInstances();
 
-	            System.out.println("Number of instances at node " + result.getID() + " " + num_Instance + "\n");
+	            System.out.println("Number of instances "+ " " + num_Instance + "\n");
 
 
 
@@ -110,11 +99,6 @@ public class Initialzer{
 
 	            // System.out.println("\n"+label);
 
-
-
-	            result.traindataset = data;
-
-	            // retrieve the different class at each node
 
 	            int N = data.numInstances(); // data size at each node
 
@@ -131,12 +115,6 @@ public class Initialzer{
 
 
 	            }
-
-
-
-	            // System.out.println("The Total number of known class:"+c);
-
-	            num_Att = data.numAttributes() - 1;
 
 
 
@@ -166,9 +144,7 @@ public class Initialzer{
 
 
 
-	            // MyNode n =(MyNode) node;
-
-	            num_Att = data.numAttributes() - 1;
+	           
 
 	        }
 
@@ -183,19 +159,6 @@ public class Initialzer{
 	            e.printStackTrace();
 
 	        }
-
-
-
-	        System.out.println("created node with ID: " + result.getID() + "\n");
-
-	        // count++;
-
-	        // if(count==N-1)
-
-
-
-	        return result;
-
 
 
 	    }
