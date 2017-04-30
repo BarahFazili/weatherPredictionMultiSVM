@@ -102,12 +102,9 @@ public class Initializer{
 
 	            int N = data.numInstances(); // data size at each node
 
-	            for (int i = 0; i < N; i++) // Adding unique classes to Hashset
-
-	            {
+	            for (int i = 0; i < N; i++) // Adding unique classes to Hashset	            {
 
 	                double y = data.instance(i).value(label - 1);
-
 	                // System.out.println("\n"+y);
 
 	                ClassSet.add(y);
@@ -115,7 +112,6 @@ public class Initializer{
 
 
 	            }
-
 
 
 	            // Initialize the weight vector dxc dimension where d is the num ber
@@ -148,10 +144,8 @@ public class Initializer{
 
 	        }
 
-	
 
 	
-
 	        catch (Exception e)
 
 	        {
